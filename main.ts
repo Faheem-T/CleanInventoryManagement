@@ -1,6 +1,6 @@
 // @ts-types="npm:@types/express@5.0.2"
 import express from "express";
-import { productRouter } from "./3-presentation/routes/productRouter.ts";
+import { productRouter } from "./src/3-presentation/routes/productRouter.ts";
 
 const app = express();
 
