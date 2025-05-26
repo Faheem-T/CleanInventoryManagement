@@ -1,8 +1,13 @@
-export function add(a: number, b: number): number {
-  return a + b;
-}
+// @ts-types="npm:@types/express@5.0.2"
+import express from "express";
+import { productRouter } from "./3-presentation/routes/productRouter.ts";
 
-// Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
-if (import.meta.main) {
-  console.log("Add 2 + 3 =", add(2, 3));
-}
+const app = express();
+
+app.use(express.json());
+
+app.use("/api/products", productRouter);
+
+app.listen(3000, () => {
+  console.log("Listening on port 3000");
+});
