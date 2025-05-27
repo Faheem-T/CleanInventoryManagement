@@ -2,6 +2,7 @@
 import express from "express";
 import { productRouter } from "./src/3-presentation/routes/productRouter.ts";
 import { errorHandler } from "./src/3-presentation/middlewares/errorHandler.ts";
+import { ENV, validateEnv } from "./src/config/config.ts";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use("/api/products", productRouter);
 
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
+validateEnv(); // Make sure all env variables are set before starting server
+
+app.listen(ENV.PORT, () => {
+  console.log(`listening on port ${ENV.PORT}`);
 });

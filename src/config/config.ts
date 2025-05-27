@@ -6,26 +6,21 @@ import { productSchema } from "../1-infrastructure/db/schemas/productSchema.ts";
 
 const { Pool } = pg;
 
-// const generateEnvVars = () => {
-//   const envVars = ["DATABASE_URL", "PORT"] as const;
-//   const env:
-//     | Record<(typeof envVars)[number], string>
-//     | Record<string | number | symbol, never> = {};
-//   for (const v of envVars) {
-//     const e = Deno.env.get(v);
-//     if (!e) {
-//       throw new Error(`Env variable ${v} not defined!`);
-//     }
-//     env[v] = e;
-//   }
-//   return env;
-// };
+const envArr = ["DATABASE_URL", "PORT"] as const;
+export const ENV: Record<(typeof envArr)[number], string | undefined> = {
+  DATABASE_URL: Deno.env.get("DATABASE_URL"),
+  PORT: Deno.env.get("PORT"),
+};
 
-// export const env = generateEnvVars();
-
-// console.log(Deno.env.get("DATABASE_URL"));
+export const validateEnv = () => {
+  for (const e of envArr) {
+    if (!ENV[e]) {
+      throw new Error(`Env variable ${e} not set`);
+    }
+  }
+};
 
 export const db = drizzle({
-  client: new Pool({ connectionString: Deno.env.get("DATABASE_URL") }),
+  client: new Pool({ connectionString: ENV.DATABASE_URL }),
   schema: { productSchema },
 });
