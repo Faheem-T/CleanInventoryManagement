@@ -9,23 +9,19 @@ export class ProductUsecase {
     return await this.productRepo.getProducts();
   }
 
-  async getProdutById(id: string): Promise<Product> {
+  async getProdutById(id: number): Promise<Product | null> {
     return await this.productRepo.getProductById(id);
   }
 
-  async createProduct(product: Product): Promise<Product | null> {
+  async createProduct(product: Product): Promise<Product> {
     try {
-      product.validate();
       return await this.productRepo.createProduct(product);
     } catch (err) {
-      if (err instanceof ProductValidationError) {
-        console.log(err);
-      }
-      return null;
+      throw err;
     }
   }
 
-  async deleteProduct(id: string): Promise<Product | null> {
+  async deleteProduct(id: number): Promise<Product | null> {
     return await this.productRepo.deleteProduct(id);
   }
 

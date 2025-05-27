@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../2-application/usecases/errors/AppError.ts";
+import { AppError } from "../../2-application/errors/AppError.ts";
 import { DomainError } from "../../0-domain/errors/DomainError.ts";
 
 export const errorHandler = (

@@ -10,6 +10,7 @@ const productUsecase = new ProductUsecase(productRepository);
 const productController = new ProductController(productUsecase);
 
 router.get("/", productController.getProducts);
+router.get("/:id", productController.getProductById);
 router.post("/", productController.createProduct);
 
 export { router as productRouter };

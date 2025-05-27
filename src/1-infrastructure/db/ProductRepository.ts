@@ -1,5 +1,5 @@
+import { eq } from "drizzle-orm";
 import { Product } from "../../0-domain/entities/Product.ts";
-import { ProductValidationError } from "../../0-domain/errors/validationError.ts";
 import { IProductRepository } from "../../0-domain/repositories/IProductRepository.ts";
 import { db } from "../../config/config.ts";
 import { productSchema } from "./schemas/productSchema.ts";
@@ -18,15 +18,28 @@ export class ProductRepository implements IProductRepository {
       });
     } catch (err) {
       throw err;
-      // console.log("Error from Product Repo: \n", err);
-      // return [];
     }
   }
-  getProductById(id: string): Promise<Product> {
-    throw new Error("Method not implemented.");
+  async getProductById(id: number): Promise<Product | null> {
+    try {
+      const row = await db
+        .select()
+        .from(productSchema)
+        .where(eq(productSchema.id, id));
+      if (row.length === 0) {
+        console.log("Repo: Not found");
+        return null;
+      }
+      const record = row[0];
+      const product = new Product(record);
+      product.validate();
+      return product;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  async createProduct(product: Product): Promise<Product | null> {
+  async createProduct(product: Product): Promise<Product> {
     try {
       const { name, price, qty } = product.toJSON();
       const result = await db
@@ -41,7 +54,7 @@ export class ProductRepository implements IProductRepository {
       throw err;
     }
   }
-  deleteProduct(id: string): Promise<Product> {
+  deleteProduct(id: number): Promise<Product> {
     throw new Error("Method not implemented.");
   }
   editProduct(product: Product): Promise<Product> {
