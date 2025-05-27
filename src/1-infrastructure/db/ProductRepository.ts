@@ -1,4 +1,5 @@
 import { Product } from "../../0-domain/entities/Product.ts";
+import { ProductValidationError } from "../../0-domain/errors/validationError.ts";
 import { IProductRepository } from "../../0-domain/repositories/IProductRepository.ts";
 import { db } from "../../config/config.ts";
 import { productSchema } from "./schemas/productSchema.ts";
@@ -16,13 +17,15 @@ export class ProductRepository implements IProductRepository {
         return p;
       });
     } catch (err) {
-      console.log("Error from Product Repo: \n", err);
-      return [];
+      throw err;
+      // console.log("Error from Product Repo: \n", err);
+      // return [];
     }
   }
   getProductById(id: string): Promise<Product> {
     throw new Error("Method not implemented.");
   }
+
   async createProduct(product: Product): Promise<Product | null> {
     try {
       const { name, price, qty } = product.toJSON();
@@ -35,8 +38,7 @@ export class ProductRepository implements IProductRepository {
       newProduct.validate();
       return newProduct;
     } catch (err) {
-      console.log("Error from Product Repo: \n", err);
-      return null;
+      throw err;
     }
   }
   deleteProduct(id: string): Promise<Product> {

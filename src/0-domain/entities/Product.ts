@@ -11,7 +11,7 @@ export class Product {
     price,
     qty,
   }: {
-    id: number;
+    id: number | null;
     name: string;
     price: number;
     qty: number;
@@ -21,27 +21,45 @@ export class Product {
     this.price = price || 0;
     this.qty = qty || 0;
   }
-  // constructor(
-  //   public id: number,
-  //   public name: string,
-  //   public price: number,
-  //   public qty: number
-  // ) {}
 
   validate() {
     // TODO make this proper
-    const missing = !this.name || !this.price || !this.qty;
-    if (missing) {
-      throw new ProductValidationError("Missing field", "price");
+    // const missingFields: (keyof Pick<Product, "name" | "price" | "qty">)[] = [];
+
+    const validationErrors: {
+      field: keyof Pick<Product, "name" | "price" | "qty">;
+      message: string;
+    }[] = [];
+    // Populating errors
+
+    // missing field errors
+    if (!this.name) {
+      validationErrors.push({ field: "name", message: "Missing field" });
     }
+    if (!this.price) {
+      validationErrors.push({ field: "price", message: "Missing field" });
+    }
+    if (!this.qty) {
+      validationErrors.push({ field: "qty", message: "Missing field" });
+    }
+
+    // validation errors
     if (this.price < 0) {
-      throw new ProductValidationError("Price cannot be less than 0", "price");
+      validationErrors.push({
+        field: "price",
+        message: "Price cannot be less than 0",
+      });
     }
     if (this.qty < 0) {
-      throw new ProductValidationError(
-        "Product quantity cannot be less than 0",
-        "qty"
-      );
+      validationErrors.push({
+        field: "qty",
+        message: "Quantity cannot be less than 0",
+      });
+    }
+
+    // throwing error
+    if (validationErrors.length > 0) {
+      throw new ProductValidationError(validationErrors);
     }
   }
 
