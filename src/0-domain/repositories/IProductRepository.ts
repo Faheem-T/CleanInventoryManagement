@@ -5,5 +5,5 @@ export interface IProductRepository {
   getProductById(id: number): Promise<Product | null>;
   createProduct(product: Product): Promise<Product>;
   deleteProduct(id: number): Promise<Product | null>;
-  editProduct(product: Product): Promise<Product | null>;
+  editProduct(id: number, product: Partial<Product>): Promise<Product | null>;
 }

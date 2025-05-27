@@ -12,5 +12,7 @@ const productController = new ProductController(productUsecase);
 router.get("/", productController.getProducts);
 router.get("/:id", productController.getProductById);
 router.post("/", productController.createProduct);
+router.delete("/:id", productController.deleteProduct);
+router.patch("/:id", productController.editProduct);
 
 export { router as productRouter };

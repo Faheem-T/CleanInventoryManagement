@@ -54,10 +54,42 @@ export class ProductRepository implements IProductRepository {
       throw err;
     }
   }
-  deleteProduct(id: number): Promise<Product> {
-    throw new Error("Method not implemented.");
+  async deleteProduct(id: number): Promise<Product | null> {
+    try {
+      const rows = await db
+        .delete(productSchema)
+        .where(eq(productSchema.id, id))
+        .returning();
+      if (rows.length === 0) {
+        return null;
+      }
+      const deleted = new Product(rows[0]);
+      deleted.validate();
+      return deleted;
+    } catch (err) {
+      throw err;
+    }
   }
-  editProduct(product: Product): Promise<Product> {
-    throw new Error("Method not implemented.");
+
+  async editProduct(
+    id: number,
+    product: Partial<Product>
+  ): Promise<Product | null> {
+    try {
+      const { name, price, qty } = product;
+      const rows = await db
+        .update(productSchema)
+        .set({ name, price, qty })
+        .where(eq(productSchema.id, id))
+        .returning();
+      if (rows.length === 0) {
+        return null;
+      }
+      const updated = new Product(rows[0]);
+      updated.validate();
+      return updated;
+    } catch (err) {
+      throw err;
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { Product } from "../../0-domain/entities/Product.ts";
-import { ProductValidationError } from "../../0-domain/errors/validationError.ts";
 import { IProductRepository } from "../../0-domain/repositories/IProductRepository.ts";
 
 export class ProductUsecase {
@@ -25,15 +24,14 @@ export class ProductUsecase {
     return await this.productRepo.deleteProduct(id);
   }
 
-  async editProduct(product: Product): Promise<Product | null> {
+  async editProduct(
+    id: number,
+    product: Partial<Product>
+  ): Promise<Product | null> {
     try {
-      product.validate();
-      return await this.productRepo.editProduct(product);
+      return await this.productRepo.editProduct(id, product);
     } catch (err) {
-      if (err instanceof ProductValidationError) {
-        console.log(err);
-      }
-      return null;
+      throw err;
     }
   }
 }

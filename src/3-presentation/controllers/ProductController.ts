@@ -21,7 +21,7 @@ export class ProductController {
     try {
       const id = req.params.id;
       if (!id) {
-        throw new BadInputError("ID not found", "id"); // complete this
+        throw new BadInputError("ID not found", "id");
       }
 
       const intId = Number(id);
@@ -43,7 +43,7 @@ export class ProductController {
 
   createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productData } = req.body;
+      const productData = req.body;
       const product = new Product(productData);
       product.validate();
       const created = await this.productUsecase.createProduct(product);
@@ -53,7 +53,55 @@ export class ProductController {
     }
   };
 
-  deleteProduct = async () => {};
+  deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        throw new BadInputError("ID not found", "id");
+      }
 
-  editProduct = async () => {};
+      const intId = Number(id);
+      if (isNaN(intId)) {
+        throw new ProductNotFoundError();
+      }
+      const deleted = await this.productUsecase.deleteProduct(intId);
+      if (!deleted) {
+        throw new ProductNotFoundError();
+      }
+
+      res.status(200).json({ deleted: deleted.toJSON() });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  editProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        throw new BadInputError("ID not found", "id");
+      }
+
+      const intId = Number(id);
+      if (isNaN(intId)) {
+        throw new ProductNotFoundError();
+      }
+
+      const { name, qty, price } = req.body;
+
+      const updated = await this.productUsecase.editProduct(intId, {
+        name,
+        qty,
+        price,
+      });
+
+      if (!updated) {
+        throw new ProductNotFoundError();
+      }
+
+      res.status(200).json({ updated: updated.toJSON() });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
