@@ -7,3 +7,7 @@ export interface IProductRepository {
   deleteProduct(id: number): Promise<Product | null>;
   editProduct(id: number, product: Partial<Product>): Promise<Product | null>;
 }
+
+export interface IProductRepositoryConstructor {
+  new (): IProductRepository;
+}

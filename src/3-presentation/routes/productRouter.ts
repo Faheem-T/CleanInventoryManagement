@@ -9,6 +9,7 @@ const productRepository = new ProductRepository();
 const productUsecase = new ProductUsecase(productRepository);
 const productController = new ProductController(productUsecase);
 
+// /api/products/
 router.get("/", productController.getProducts);
 router.get("/:id", productController.getProductById);
 router.post("/", productController.createProduct);
